@@ -12,7 +12,7 @@ struct ContentView: View {
     @State var secondbutton: Bool = false
     @State var thirdbutton: Bool = false
     @State var fourthbutton: Bool = false
-    
+    @State var courseCodeCount = []
     //MARK: -> bodyView
     var body: some View {
         ZStack {
@@ -20,29 +20,30 @@ struct ContentView: View {
                 .ignoresSafeArea()
             VStack {
                 HStack{
-                    Button{
-                        
-                    } label: {
-                        Image(systemName:"chevron.backward").foregroundColor(Color.white)
-                            .font(Font.system(size: 25))
+                    HStack(spacing: 18){
+                        Button{
+                            
+                        } label: {
+                            Image("bulletMenuButton").foregroundColor(Color.white)
+                                .font(Font.system(size: 25))
+                        }
+                        Label("Admin Courses", systemImage: "")
+                            .foregroundColor(.white)
+                            .font(.system(size: 20))
+                            .fontWeight(.bold)
+                            .padding(-11)
                     }
-                    Label("Admin Courses", systemImage: "")
-                        .foregroundColor(.white)
-                        .font(.system(size: 20))
-                        .fontWeight(.bold)
-                        .padding(-11)
                     Spacer()
                     
                     HStack{
                         searchButtonView
-                        
                             .frame(width: 40 ,height: 40)
                             .background(Color.white)
                     }
                     .cornerRadius(20)
                 }
                 .padding()
-                
+                ScrollView(.horizontal,showsIndicators: false){
                 HStack {
                     
                     completeButtonView
@@ -51,7 +52,7 @@ struct ContentView: View {
                     allButtonView
                     
                 }
-                
+            }
                 .padding(.leading,0)
                 Spacer()
                 
@@ -79,12 +80,11 @@ struct ContentView: View {
                 
                 
             }) {
-                Text("Completed").padding()
+                Text("Completed").padding(10)
                     .font(Font.system(size: 12))
-                    .background(firstbutton ? Color.white : Color(hex: "#c0c0c0"))
-                //(hex: "#c0c0c0")
+                    .frame(width: 140)
+                    .background(firstbutton ? Color.white : Color.white.opacity(0.6))
                     .foregroundColor(Color(uiColor: .black))
-                    .frame(height: 40)
                     .cornerRadius(20)
                 
                 
@@ -96,10 +96,10 @@ struct ContentView: View {
     @State var title = ""
   
     @State var playing = false
-    @State var width : CGFloat = 0
-    @State var songs = ["Arabic","tada"]
+    @State var width : CGFloat = 100
     @State var current = 0
     @State var finish = false
+    @State var rating = 3
     @ViewBuilder var courseCodeCellView: some View{
         VStack(alignment: .leading){
             VStack(alignment: .leading,spacing: 4){
@@ -113,9 +113,19 @@ struct ContentView: View {
              
             }.padding()
             Divider().padding(2)
+            VStack(alignment: .leading,spacing: 10){
+                StarRationView(rating: $rating)
+                Text("1234 Total feedbacks / 85 Sessions")
+            }.padding()
+          
+            Divider().padding(2)
             VStack(alignment: .leading){
                 HStack{
-                    Text(" 00/ 52 Sessions")
+                     let SessionCount = ["52","33"]
+                    ForEach(SessionCount.indices,id: \.self){ index in
+                        Text(" \(SessionCount[index])/ 52 Sessions")
+                    }
+                  
                   Spacer()
                     Button {
                         
@@ -126,7 +136,7 @@ struct ContentView: View {
 
                 }
                 ZStack(alignment: .leading){
-                    Capsule().fill(Color.black.opacity(0.08)).frame(height: 8)
+                    Capsule().fill(Color.black.opacity(0.08)).frame(width: .infinity,height: 8)
                     Capsule().fill(Color.red).frame(width: self.width ,height: 8)
                         .gesture(DragGesture()
                             .onChanged({ (value) in
@@ -137,7 +147,7 @@ struct ContentView: View {
                                 
                                 let x = value.location.x
                                 let screen = UIScreen.main.bounds.width - 30
-                               
+
                                 let percent = x / screen
                             
                             }))
@@ -150,20 +160,24 @@ struct ContentView: View {
     }
     
     @ViewBuilder var backgroundView: some View{
-        ScrollView(showsIndicators: false){
-            VStack(alignment: .leading){
-                VStack{
-                    ForEach(0..<3){ _ in
-                        courseCodeCellView
-                            .frame(maxWidth: .infinity)
-                            .background(Color.white)
-                            .cornerRadius(9)
-                            .padding()
+        VStack{
+         if fourthbutton{
+                ScrollView(showsIndicators: false){
+                    VStack(alignment: .leading){
+                        VStack{
+                            ForEach(0..<3){ _ in
+                                courseCodeCellView
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color.white)
+                                    .cornerRadius(9)
+                                    .padding()
+                            }
+                            
+                            
+                        }
+                        
                     }
-                  
-                    
-                }
-           
+               }
             }
         }
      }
@@ -192,12 +206,11 @@ struct ContentView: View {
             
         }) {
             Text("To Start")
-                .padding()
+                .padding(10)
                 .foregroundColor(Color(uiColor: .black))
-                .font(Font.system(size: 12))
-                .background(secondbutton ? Color.white : Color(hex: "#c0c0c0"))
-                .frame(height: 40)
-                .background(Color(hex: "#c0c0c0"))
+                .font(Font.system(size: 14))
+                .frame(width: 110)
+                .background(secondbutton ? Color.white : Color.white.opacity(0.6))
                 .cornerRadius(20)
             
         }
@@ -218,12 +231,12 @@ struct ContentView: View {
             fourthbutton = false
             
         }) {
-            Text("In  Progress").padding()
+            Text("In  Progress").padding(10)
                 .foregroundColor(Color(uiColor: .black))
-                .font(Font.system(size: 12))
-                .background(thirdbutton ? Color.white : Color(hex: "#c0c0c0"))
-                
-            .frame(height: 40)
+                .font(Font.system(size: 14))
+                .frame(width: 110)
+                .background(thirdbutton ? Color.white : Color.white.opacity(0.6))
+           
             .cornerRadius(20)
                            
             
@@ -244,12 +257,11 @@ struct ContentView: View {
             fourthbutton = true
             
         }) {
-            Text("All").padding()
+            Text("All").padding(10)
                 .foregroundColor(Color(uiColor: .black))
-                .font(Font.system(size: 12))
-                .background(fourthbutton ? Color.white : Color(hex: "#c0c0c0"))
-                
-                .frame(height: 40)
+                .font(Font.system(size: 14))
+                .frame(width: 110)
+                .background(fourthbutton ? Color.white : Color.white.opacity(0.6))
                .cornerRadius(20)
             
             
@@ -259,76 +271,44 @@ struct ContentView: View {
         
      }
     //MARK: ->backgroundView
- 
 
-    
-    @ViewBuilder var frontView: some View{
-        
-        VStack {
-           
-            VStack{
-                HStack{
-                    Label("Session Details", systemImage: "")
-                    Spacer()
-                    ZStack{
-                        Button {
-                            
-                        } label: {
-                            
-                            Text("More Info")
-                            Image(systemName: "info.circle")
-                            
-                            
-                        }
-                    }
-                    .frame(width: 120,height: 30)
-                   
-                    .overlay( /// apply a rounded border
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(.blue, lineWidth: 2))
-                    .padding(.trailing,10)
-
-                    
-                }
-                
-                .padding(.top,100)
-                Divider()
-                VStack{
-                    Label("Sessoin timing", systemImage: "")
-                        .font(Font.system(size: 12))
-                        .foregroundColor(.gray)
-                        .padding(.trailing,250)
-                    Label("7 Jan 10:00AM-11:00AM", systemImage: "")
-                        .padding(.trailing,140)
-                        .padding(.top,-3)
-                    Label("Student group", systemImage: "")
-                        .font(Font.system(size: 12))
-                        .foregroundColor(.gray)
-                        .padding(.trailing,250)
-                        .padding(.top,5)
-                    Label("MG1 - G1( 50 Students )", systemImage: "")
-                        .padding(.trailing,140)
-                        .padding(.top,-3)
-                    
-                    
-                }
-                
-            }
-//            popUpView
-//
-//                .frame(width: 400,height: 400)
-//                .background(Color(uiColor: .white))
-//                .cornerRadius(15)
-//              //  .padding(.top,10)
-                
-              Spacer()
-           
-                
-        }
-       
-     }
 }
+struct StarRationView: View {
+    @Binding var rating: Int
+    var label = ""
+    var maximumRation = 5
+    var offImage: Image?
+    var onImage = Image(systemName: "star.fill")
+    var offColor = Color.gray
+    var onColor = Color.yellow
+    var body: some View{
+    
+            HStack{
+                if label.isEmpty == false{
+                    Text(label)
+                }
+                ForEach(1..<maximumRation + 1, id: \.self) { number in
+                    image(for: number)
+                        .font(.system(size: 22))
+                        .foregroundColor(number > rating  ? offColor : onColor)
+                        .onTapGesture {
+                            rating = number
+                        }
+                    
+                }
+            }
+        }
+        
+        func image(for number: Int) -> Image {
+            if number > rating{
+                return offImage ?? onImage
+                
+            }else{
+                return onImage
+            }
+        }
 
+}
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
